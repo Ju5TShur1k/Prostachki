@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Вход в систему</title>
+    <style>
+        .container { max-width: 400px; margin: 50px auto; padding: 20px; border: 1px solid #ddd; }
+        .form-group { margin-bottom: 15px; }
+        input { width: 100%; padding: 10px; }
+        .btn { width: 100%; background: blue; color: white; padding: 10px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Вход в аккаунт</h2>
+    <form action="/login" method="post">
+        <input type="text" name="username" placeholder="Логин" required>
+        <input type="password" name="password" placeholder="Пароль" required>
+        <button type="submit" class="btn">Войти</button>
+    </form>
+    <a href="/register">Регистрация</a>
+</div>
+</body>
+</html>
