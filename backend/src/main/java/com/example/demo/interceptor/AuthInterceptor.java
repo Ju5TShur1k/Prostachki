@@ -16,18 +16,16 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         String requestURI = request.getRequestURI();
 
-        // Список публичных URL (должен совпадать с excludePathPatterns)
-        if (requestURI.startsWith("/auth/") ||
+        // Разрешить доступ к главной странице без авторизации
+        if (requestURI.equals("/") ||
+                requestURI.startsWith("/auth/") ||
                 requestURI.equals("/login") ||
-                requestURI.equals("/logout") ||
                 requestURI.startsWith("/static/") ||
-                requestURI.startsWith("/css/") ||
-                requestURI.equals("/error") ||
-                requestURI.equals("/favicon.ico")) {
-            return true; // пропускаем публичные URL
+                requestURI.startsWith("/css/")) {
+            return true; // пропускаем без проверки авторизации
         }
 
-        // Проверяем авторизацию для защищенных URL
+        // Проверяем авторизацию только для защищенных URL
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("currentUser");
 
