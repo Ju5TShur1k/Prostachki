@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.service.AuthService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model; // ← ВАЖНО: этот импорт!
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,36 +17,39 @@ public class SessionController {
         this.authService = authService;
     }
 
+    // Форма входа
     @GetMapping("/login")
     public String showLoginForm(@RequestParam(value = "error", required = false) String error,
-                                Model model) { // ← Model должен быть параметром
+                                Model model) {
         if (error != null) {
-            model.addAttribute("error", "Неверный логин или пароль"); // ← теперь работает
+            model.addAttribute("error", "Неверный логин или пароль");
         }
-        return "login";
+        return "auth/login";
     }
 
+    // Обработка входа
     @PostMapping("/login")
     public String loginUser(@RequestParam String username,
                             @RequestParam String password,
                             HttpSession session,
-                            Model model) { // ← Добавить Model если нужно передавать данные
+                            Model model) {
 
         if (authService.validateUserCredentials(username, password)) {
             session.setAttribute("currentUser", username);
-            return "redirect:/dashboard";
+            return "redirect:/"; // Перенаправляем на главную страницу
         } else {
-            // Если используем redirect, то передаем через параметры URL
             return "redirect:/login?error";
         }
     }
 
+    // Выход
     @GetMapping("/logout")
     public String logoutUser(HttpSession session) {
         session.invalidate();
         return "redirect:/login?logout";
     }
 
+    // Личный кабинет
     @GetMapping("/dashboard")
     public String showDashboard(HttpSession session, Model model) {
         String username = (String) session.getAttribute("currentUser");
@@ -55,7 +58,7 @@ public class SessionController {
             return "redirect:/login";
         }
 
-        model.addAttribute("username", username); // ← передаем имя в шаблон
-        return "dashboard";
+        model.addAttribute("username", username);
+        return "auth/dashboard";
     }
 }

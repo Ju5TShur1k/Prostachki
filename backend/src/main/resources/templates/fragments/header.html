@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="header">
+    <nav style="background: #2c3e50; padding: 1rem; color: white;">
+        <a th:href="@{/}" style="color: white; text-decoration: none; font-size: 1.2rem;">
+            🚆 ЖД Мониторинг
+        </a>
+        <div style="float: right;">
+            <a th:if="${isAuthenticated}" th:href="@{/logout}" style="color: white; margin-left: 1rem;">Выйти</a>
+            <a th:unless="${isAuthenticated}" th:href="@{/login}" style="color: white; margin-left: 1rem;">Войти</a>
+        </div>
+    </nav>
+</div>
+</html>
