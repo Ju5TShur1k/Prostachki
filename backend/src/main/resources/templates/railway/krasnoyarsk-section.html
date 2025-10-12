@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Участок Красноярской ж/д - Система мониторинга</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: #f5f5f5;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    header {
+        background-color: #2c3e50;
+        color: white;
+        padding: 20px 0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    h1 {
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    .back-button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s;
+    }
+
+    .back-button:hover {
+        background-color: #2980b9;
+    }
+
+    .section-info {
+        background-color: white;
+        border-radius: 8px;
+        padding: 30px;
+        margin: 30px 0;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .section-title {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ecf0f1;
+    }
+
+    .section-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .detail-card {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 6px;
+        border-left: 4px solid #3498db;
+    }
+
+    .detail-card h3 {
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+
+    .status-indicator {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+
+    .status-active {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    .status-planned {
+        background-color: #f39c12;
+        color: white;
+    }
+
+    .status-none {
+        background-color: #2ecc71;
+        color: white;
+    }
+
+    .work-schedule {
+        margin-top: 30px;
+    }
+
+    .schedule-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    .schedule-table th, .schedule-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ecf0f1;
+    }
+
+    .schedule-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .schedule-table tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .map-container {
+        margin-top: 30px;
+        height: 300px;
+        background-color: #ecf0f1;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7f8c8d;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 40px;
+        padding: 20px;
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+        }
+
+        .section-details {
+            grid-template-columns: 1fr;
+        }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <div class="header-content">
+      <h1>Система мониторинга ЖД путей</h1>
+      <a th:href="@{/}" class="back-button">← Назад к списку участков</a>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="section-info">
+    <h2 class="section-title" th:text="${sectionName} + ' (' + ${kmRange} + ')'">Участок Красноярской ж/д (Км 120-125)</h2>
+    <p th:text="${description}">Основной магистральный участок центрального направления</p>
+
+    <div class="section-details">
+      <div class="detail-card">
+        <h3>Статус ремонтных работ</h3>
+        <p th:if="${hasRepairWork}">На участке запланированы ремонтные работы</p>
+        <p th:unless="${hasRepairWork}">Ремонтные работы не запланированы</p>
+        <span class="status-indicator"
+              th:classappend="${hasRepairWork} ? 'status-planned' : 'status-none'"
+              th:text="${repairStatus}">Запланированы</span>
+      </div>
+
+      <div class="detail-card" th:if="${hasRepairWork}">
+        <h3>Плановый период работ</h3>
+        <p th:text="${repairPeriod}">15 сентября 2023 - 30 сентября 2023</p>
+      </div>
+
+      <div class="detail-card" th:if="${hasRepairWork}">
+        <h3>Тип работ</h3>
+        <p th:text="${workType}">Частичная замена шпал и балласта</p>
+      </div>
+
+      <div class="detail-card" th:if="${hasRepairWork}">
+        <h3>Ответственный подрядчик</h3>
+        <p th:text="${contractor}">ООО "Желдорремонт"</p>
+      </div>
+    </div>
+
+    <div class="work-schedule" th:if="${hasRepairWork}">
+      <h3 class="section-title">График работ</h3>
+      <table class="schedule-table">
+        <thead>
+        <tr>
+          <th>Дата</th>
+          <th>Время</th>
+          <th>Участок (км)</th>
+          <th>Вид работ</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>15.09.2023</td>
+          <td>09:00-18:00</td>
+          <td>120-121</td>
+          <td>Замена шпал</td>
+        </tr>
+        <tr>
+          <td>16.09.2023</td>
+          <td>09:00-18:00</td>
+          <td>121-122</td>
+          <td>Замена шпал</td>
+        </tr>
+        <tr>
+          <td>20.09.2023</td>
+          <td>10:00-16:00</td>
+          <td>122-123</td>
+          <td>Балластировка</td>
+        </tr>
+        <tr>
+          <td>25.09.2023</td>
+          <td>08:00-20:00</td>
+          <td>123-125</td>
+          <td>Выправка пути</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="map-container">
+      Карта участка Красноярской ж/д (км 0-125)
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>Система мониторинга состояния железнодорожных путей © 2025</p>
+  </div>
+</footer>
+</body>
+</html>
