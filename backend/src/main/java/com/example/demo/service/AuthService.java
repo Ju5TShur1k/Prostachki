@@ -51,4 +51,9 @@ public class AuthService {
         User user = userOptional.get();
         return passwordService.matches(password, user.getPassword());
     }
+
+    // Дополнительный метод для поиска пользователя
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }

@@ -16,14 +16,21 @@ public class HomeController {
         this.railwayService = railwayService;
     }
 
-    // Главная страница
     @GetMapping("/")
     public String home(HttpSession session,
                        @RequestParam(value = "registrationSuccess", required = false) Boolean registrationSuccess,
                        Model model) {
+
         String username = (String) session.getAttribute("currentUser");
-        model.addAttribute("username", username);
+        System.out.println("=== DEBUG HOME CONTROLLER ===");
+        System.out.println("Session ID: " + session.getId());
+        System.out.println("Session currentUser: " + username);
+        System.out.println("isAuthenticated: " + (username != null));
+
+        // Устанавливаем атрибуты для шаблона
+        model.addAttribute("currentUsername", username);
         model.addAttribute("isAuthenticated", username != null);
+        model.addAttribute("session", session); // Добавляем сессию в модель
 
         // Показываем сообщение об успешной регистрации
         if (Boolean.TRUE.equals(registrationSuccess)) {
