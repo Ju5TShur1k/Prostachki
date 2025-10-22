@@ -10,7 +10,7 @@ public class RailwayController {
     @GetMapping("/krasnoyarsk")
     public String krasnoyarskSection(Model model) {
         model.addAttribute("sectionName", "Участок Красноярской ж/д");
-        model.addAttribute("kmRange", "Км 120-125");
+        model.addAttribute("kmRange", "Км 0-125");
         model.addAttribute("description", "Основной магистральный участок центрального направления");
         model.addAttribute("hasRepairWork", true);
         model.addAttribute("repairStatus", "Запланированы");
