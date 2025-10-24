@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Панель управления ЦДУ - ЖД Мониторинг</title>
+  <style>
+    /* Стили header'а такие же как в index.html */
+    .header {
+        background: #2c3e50;
+        color: white;
+        padding: 0.8rem 0;
+        width: 100%;
+    }
+
+    .nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+        gap: 1rem;
+    }
+
+    .nav-brand {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .nav-menu {
+        display: flex;
+        list-style: none;
+        gap: 0.8rem;
+        margin: 0;
+        padding: 0;
+        flex-wrap: wrap;
+        justify-content: center;
+        flex: 1;
+    }
+
+    .nav-menu a {
+        color: white;
+        text-decoration: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        transition: background 0.3s;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+
+    .nav-menu a:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+    .nav-auth {
+        display: flex;
+        gap: 0.8rem;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .user-profile-compact {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .user-avatar-small {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #3498db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .user-welcome {
+        color: white;
+        margin-right: 0.8rem;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    .logout-btn-compact {
+        color: white;
+        text-decoration: none;
+        padding: 0.4rem 0.8rem;
+        border: 1px solid #e74c3c;
+        border-radius: 4px;
+        transition: all 0.3s;
+        background: #e74c3c;
+        font-size: 0.85rem;
+    }
+
+    /* Стили для панели ЦДУ */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .welcome-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .directorate-badge {
+        display: inline-block;
+        background: #3498db;
+        color: white;
+        padding: 0.3rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .control-panel {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .control-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .control-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 1.5rem;
+        transition: all 0.3s;
+        background: #f8f9fa;
+    }
+
+    .control-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .control-card h3 {
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-control {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.6rem 1.2rem;
+        background: #27ae60;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background 0.3s;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-control:hover {
+        background: #219a52;
+    }
+
+    .footer {
+        background: #34495e;
+        color: white;
+        text-align: center;
+        padding: 2rem;
+        margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+<header class="header">
+  <nav class="nav">
+    <a th:href="@{/}" class="nav-brand">
+      <span>🚆</span>
+      ЖД Мониторинг - ЦДУ
+    </a>
+
+    <ul class="nav-menu">
+      <li><a th:href="@{/cdu/dashboard}">Главная ЦДУ</a></li>
+      <li><a th:href="@{/}">Общая информация</a></li>
+    </ul>
+
+    <div class="nav-auth">
+      <div class="user-profile-compact">
+        <div class="user-avatar-small" th:text="${#strings.substring(currentUsername, 0, 1).toUpperCase()}">
+          А
+        </div>
+        <span class="user-welcome" th:text="${currentUsername}"></span>
+        <a th:href="@{/auth/logout}" class="logout-btn-compact">Выйти</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="main-container">
+  <div class="welcome-section">
+    <div class="directorate-badge">Центральная Дирекция Управления</div>
+    <h1>Панель управления системами</h1>
+    <p>Управление и настройка систем мониторинга железнодорожных путей</p>
+  </div>
+
+  <div class="control-panel">
+    <h2>Управление системами</h2>
+
+    <div class="control-grid">
+      <div class="control-card">
+        <h3>📊 Управление окнами</h3>
+        <p>Настройка интерфейсов и рабочих окон системы мониторинга</p>
+        <button class="btn-control">Перейти к настройкам</button>
+      </div>
+
+      <div class="control-card">
+        <h3>⚙️ Настройки системы</h3>
+        <p>Конфигурация параметров системы и рабочих процессов</p>
+        <button class="btn-control">Настроить систему</button>
+      </div>
+
+      <div class="control-card">
+        <h3>👥 Управление пользователями</h3>
+        <p>Добавление и управление пользователями системы</p>
+        <button class="btn-control">Управление доступом</button>
+      </div>
+
+      <div class="control-card">
+        <h3>📈 Аналитика</h3>
+        <p>Аналитические отчеты и статистика работы системы</p>
+        <button class="btn-control">Просмотреть отчеты</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>&copy; 2025 ЖД Мониторинг. Центральная Дирекция Управления</p>
+  <p>Контактная информация: cdu@rzd.ru</p>
+</footer>
+</body>
+</html>

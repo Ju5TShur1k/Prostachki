@@ -30,13 +30,19 @@ public class AuthService {
             throw new RuntimeException("Email уже используется!");
         }
 
+        // Проверка выбора дирекции
+        if (registerRequest.getDirectorate() == null || registerRequest.getDirectorate().isEmpty()) {
+            throw new RuntimeException("Необходимо выбрать дирекцию!");
+        }
+
         // Создание нового пользователя
         User user = new User();
         user.setUsername(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordService.encodePassword(registerRequest.getPassword()));
+        user.setDirectorate(registerRequest.getDirectorate());
         user.setRegistrationDate(LocalDateTime.now());
-        user.setEnabled(true); // Сразу активны
+        user.setEnabled(true);
 
         return userRepository.save(user);
     }
@@ -52,8 +58,12 @@ public class AuthService {
         return passwordService.matches(password, user.getPassword());
     }
 
-    // Дополнительный метод для поиска пользователя
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    public String getUserDirectorate(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        return user.map(User::getDirectorate).orElse(null);
     }
 }

@@ -1,51 +1,23 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email"),
-        @UniqueConstraint(columnNames = "username")
-})
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Имя пользователя обязательно")
-    @Size(min = 3, max = 50, message = "Имя пользователя должно быть от 3 до 50 символов")
     private String username;
-
-    @NotBlank(message = "Email обязателен")
-    @Size(max = 100, message = "Email не должен превышать 100 символов")
-    @Email(message = "Некорректный формат email")
     private String email;
-
-    @NotBlank(message = "Пароль обязателен")
-    @Size(min = 6, max = 100, message = "Пароль должен быть от 6 до 100 символов")
     private String password;
-
-    private boolean enabled = false;
-
-    private String verificationToken;
-
+    private String directorate; // ЦДУ или ЦДИ
     private LocalDateTime registrationDate;
+    private Boolean enabled;
 
-    // Конструкторы
-    public User() {}
-
-    public User(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.registrationDate = LocalDateTime.now();
-    }
-
-    // Геттеры и сеттеры
+    // геттеры и сеттеры
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -58,12 +30,12 @@ public class User {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    public boolean isEnabled() { return enabled; }
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
-
-    public String getVerificationToken() { return verificationToken; }
-    public void setVerificationToken(String verificationToken) { this.verificationToken = verificationToken; }
+    public String getDirectorate() { return directorate; }
+    public void setDirectorate(String directorate) { this.directorate = directorate; }
 
     public LocalDateTime getRegistrationDate() { return registrationDate; }
     public void setRegistrationDate(LocalDateTime registrationDate) { this.registrationDate = registrationDate; }
+
+    public Boolean getEnabled() { return enabled; }
+    public void setEnabled(Boolean enabled) { this.enabled = enabled; }
 }

@@ -22,22 +22,16 @@ public class HomeController {
                        Model model) {
 
         String username = (String) session.getAttribute("currentUser");
-        System.out.println("=== DEBUG HOME CONTROLLER ===");
-        System.out.println("Session ID: " + session.getId());
-        System.out.println("Session currentUser: " + username);
-        System.out.println("isAuthenticated: " + (username != null));
+        String directorate = (String) session.getAttribute("userDirectorate");
 
-        // Устанавливаем атрибуты для шаблона
         model.addAttribute("currentUsername", username);
         model.addAttribute("isAuthenticated", username != null);
-        model.addAttribute("session", session); // Добавляем сессию в модель
+        model.addAttribute("userDirectorate", directorate);
 
-        // Показываем сообщение об успешной регистрации
         if (Boolean.TRUE.equals(registrationSuccess)) {
             model.addAttribute("showRegistrationMessage", true);
         }
 
-        // Загружаем данные для меню
         model.addAttribute("railwaySections", railwayService.getAllSections());
 
         return "index";
