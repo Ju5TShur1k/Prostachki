@@ -1,121 +1,5 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <style>
-        .header {
-            background: #2c3e50;
-            color: white;
-            padding: 1rem 0;
-            width: 100%;
-        }
-
-        .nav {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-
-        .nav-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-menu a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: background 0.3s;
-        }
-
-        .nav-menu a:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .nav-auth {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .km-display {
-            color: white;
-            font-weight: bold;
-            margin-right: 1rem;
-        }
-
-        .user-welcome {
-            color: white;
-            margin-right: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .user-profile-compact {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .user-avatar-small {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: #3498db;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            font-size: 0.8rem;
-        }
-
-        .nav-auth a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border: 1px solid white;
-            border-radius: 4px;
-            transition: all 0.3s;
-        }
-
-        .nav-auth a:hover {
-            background: white;
-            color: #2c3e50;
-        }
-
-        .logout-btn-compact {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border: 1px solid #e74c3c;
-            border-radius: 4px;
-            transition: all 0.3s;
-            background: #e74c3c;
-        }
-
-        .logout-btn-compact:hover {
-            background: #c0392b;
-            border-color: #c0392b;
-        }
-    </style>
-</head>
 <body>
 <div th:fragment="header">
     <header class="header">
@@ -129,10 +13,16 @@
                 <li><a th:href="@{/}">Главная</a></li>
                 <li><a th:href="@{/krasnoyarsk}">Участок 0-125 км</a></li>
                 <li><a th:href="@{/east-siberia}">Участок 125-230 км</a></li>
-                <li><a th:href="@{/zabaikalye}">Участок 230-335 км</a></li>
+                <li><a th:href="@{/zabalkalye}">Участок 230-335 км</a></li>
+
+                <!-- Вкладка для ЦДУ - показывается только авторизованным пользователям ЦДУ -->
+                <li th:if="${isAuthenticated and userDirectorate == 'ЦДУ'}">
+                    <a th:href="@{/cdu/dashboard}" class="cdu-tab">Панель ЦДУ</a>
+                </li>
             </ul>
 
             <div class="nav-auth">
+                <span class="km-display">230-335 км</span>
 
                 <!-- Для авторизованных пользователей -->
                 <div th:if="${isAuthenticated}" class="user-profile-compact">
