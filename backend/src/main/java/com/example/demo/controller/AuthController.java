@@ -16,6 +16,15 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @GetMapping("/login")
+    public String showLoginForm(Model model,
+                                @RequestParam(value = "error", required = false) Boolean error) {
+        if (Boolean.TRUE.equals(error)) {
+            model.addAttribute("error", "Неверное имя пользователя или пароль");
+        }
+        return "auth/login";
+    }
+
     @PostMapping("/login")
     public String loginUser(@RequestParam String username,
                             @RequestParam String password,
@@ -30,11 +39,29 @@ public class AuthController {
             String directorate = authService.getUserDirectorate(username);
             session.setAttribute("userDirectorate", directorate);
 
-            // Всегда перенаправляем на главную страницу после входа
-            return "redirect:/";
+            // Перенаправляем в зависимости от дирекции
+            if ("ЦДУ".equals(directorate)) {
+                return "redirect:/cdu/dashboard";
+            } else {
+                return "redirect:/";
+            }
         } else {
             return "redirect:/auth/login?error=true";
         }
+    }
+
+    @GetMapping("/logout")
+    public String logoutUser(HttpSession session) {
+        session.removeAttribute("currentUser");
+        session.removeAttribute("userDirectorate");
+        session.invalidate();
+        return "redirect:/";
+    }
+
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("registerRequest", new RegisterRequest());
+        return "auth/register";
     }
 
     @PostMapping("/register")
@@ -54,8 +81,12 @@ public class AuthController {
             session.setAttribute("currentUser", registerRequest.getUsername());
             session.setAttribute("userDirectorate", registerRequest.getDirectorate());
 
-            // Всегда перенаправляем на главную страницу после регистрации
-            return "redirect:/?registrationSuccess=true";
+            // Перенаправляем в зависимости от дирекции
+            if ("ЦДУ".equals(registerRequest.getDirectorate())) {
+                return "redirect:/cdu/dashboard";
+            } else {
+                return "redirect:/?registrationSuccess=true";
+            }
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
             return "auth/register";
