@@ -31,36 +31,30 @@ public class AuthController {
                             HttpSession session,
                             Model model) {
 
-        System.out.println("=== DEBUG LOGIN ATTEMPT ===");
-        System.out.println("Username: " + username);
-        System.out.println("Session ID before: " + session.getId());
-
         boolean isAuthenticated = authService.validateUserCredentials(username, password);
 
         if (isAuthenticated) {
-            // Устанавливаем пользователя в сессию
+            // Устанавливаем пользователя и его дирекцию в сессию
             session.setAttribute("currentUser", username);
-            System.out.println("Session ID after: " + session.getId());
-            System.out.println("Session currentUser set to: " + session.getAttribute("currentUser"));
-            System.out.println("=== LOGIN SUCCESS ===");
-            return "redirect:/";
+            String directorate = authService.getUserDirectorate(username);
+            session.setAttribute("userDirectorate", directorate);
+
+            // Перенаправляем в зависимости от дирекции
+            if ("ЦДУ".equals(directorate)) {
+                return "redirect:/cdu/dashboard";
+            } else {
+                return "redirect:/";
+            }
         } else {
-            System.out.println("=== LOGIN FAILED ===");
             return "redirect:/auth/login?error=true";
         }
     }
 
     @GetMapping("/logout")
     public String logoutUser(HttpSession session) {
-        System.out.println("=== DEBUG LOGOUT ===");
-        System.out.println("Session ID: " + session.getId());
-        System.out.println("User before logout: " + session.getAttribute("currentUser"));
-
-        // Удаляем пользователя из сессии
         session.removeAttribute("currentUser");
+        session.removeAttribute("userDirectorate");
         session.invalidate();
-
-        System.out.println("=== LOGOUT SUCCESS ===");
         return "redirect:/";
     }
 
@@ -85,9 +79,14 @@ public class AuthController {
             authService.registerUser(registerRequest);
             // Автоматически входим после регистрации
             session.setAttribute("currentUser", registerRequest.getUsername());
-            System.out.println("=== DEBUG REGISTRATION ===");
-            System.out.println("User registered and logged in: " + registerRequest.getUsername());
-            return "redirect:/?registrationSuccess=true";
+            session.setAttribute("userDirectorate", registerRequest.getDirectorate());
+
+            // Перенаправляем в зависимости от дирекции
+            if ("ЦДУ".equals(registerRequest.getDirectorate())) {
+                return "redirect:/cdu/dashboard";
+            } else {
+                return "redirect:/?registrationSuccess=true";
+            }
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
             return "auth/register";

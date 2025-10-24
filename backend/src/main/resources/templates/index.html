@@ -141,6 +141,16 @@
             border-color: #c0392b;
         }
 
+        /* Стиль для вкладки ЦДУ */
+        .cdu-tab {
+            background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+            border: 1px solid #c0392b !important;
+        }
+
+        .cdu-tab:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226) !important;
+        }
+
         /* Адаптивность для мобильных устройств */
         @media (max-width: 768px) {
             .nav {
@@ -291,6 +301,14 @@
 <!-- HEADER ИЗ FRAGMENT -->
 <div th:replace="fragments/header :: header"></div>
 
+<!-- Отладочная информация (временно) -->
+<div class="debug-info">
+    <h4>Отладочная информация:</h4>
+    <p>isAuthenticated: <strong th:text="${isAuthenticated}">unknown</strong></p>
+    <p>currentUsername: <strong th:text="${currentUsername}">unknown</strong></p>
+    <p>userDirectorate: <strong th:text="${userDirectorate}">unknown</strong></p>
+</div>
+
 <!-- Основной контент -->
 <div class="main-container">
     <!-- Сообщение об успешной регистрации -->
@@ -319,7 +337,7 @@
             <!-- Участок 2 -->
             <div class="section-card">
                 <h3>Участок Восточно-Сибирской ж/д</h3>
-                <div class="kilometer">Км 125-230</div>
+                <div class="kilometer">Км 123-230</div>
                 <p>Горный участок с сложным рельефом</p>
                 <a th:href="@{/east-siberia}" class="btn-view">Просмотреть участок</a>
             </div>
@@ -329,7 +347,15 @@
                 <h3>Участок Забайкальской ж/д</h3>
                 <div class="kilometer">Км 230-335</div>
                 <p>Равнинный участок, текущие работы по обслуживанию</p>
-                <a th:href="@{/zabaikalye}" class="btn-view">Просмотреть участок</a>
+                <a th:href="@{/zabalkalye}" class="btn-view">Просмотреть участок</a>
+            </div>
+
+            <!-- Панель ЦДУ - показывается только для авторизованных пользователей ЦДУ -->
+            <div class="section-card" th:if="${isAuthenticated and userDirectorate == 'ЦДУ'}">
+                <h3>🏢 Панель управления ЦДУ</h3>
+                <div class="kilometer">Управление системами</div>
+                <p>Доступ к настройкам окон и управлению системой мониторинга</p>
+                <a th:href="@{/cdu/dashboard}" class="btn-view" style="background: #e74c3c;">Перейти в панель управления</a>
             </div>
         </div>
     </div>
