@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/cdu")
-public class CDUController {
+@RequestMapping("/cdi")
+public class CDIController {
 
-    @GetMapping("/dashboard")
-    public String cduDashboard(HttpSession session, Model model) {
+    @GetMapping("/info-dashboard")
+    public String cdiDashboard(HttpSession session, Model model) {
         String username = (String) session.getAttribute("currentUser");
         String directorate = (String) session.getAttribute("userDirectorate");
 
@@ -20,10 +20,10 @@ public class CDUController {
             return "redirect:/auth/login";
         }
 
-        if (!"ЦДУ".equals(directorate)) {
+        if (!"ЦДИ".equals(directorate)) {
             return "redirect:/";
         }
 
-        return "cdu/dashboard";
+        return "cdi/info-dashboard";
     }
 }

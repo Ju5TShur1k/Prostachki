@@ -279,35 +279,11 @@
             padding: 2rem;
             margin-top: 3rem;
         }
-
-        /* Отладочная информация (временно) */
-        .debug-info {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 14px;
-        }
-
-        .debug-info h4 {
-            color: #856404;
-            margin-bottom: 10px;
-        }
     </style>
 </head>
 <body>
 <!-- HEADER ИЗ FRAGMENT -->
 <div th:replace="fragments/header :: header"></div>
-
-<!-- Отладочная информация (временно) -->
-<div class="debug-info">
-    <h4>Отладочная информация:</h4>
-    <p>isAuthenticated: <strong th:text="${isAuthenticated}">unknown</strong></p>
-    <p>currentUsername: <strong th:text="${currentUsername}">unknown</strong></p>
-    <p>userDirectorate: <strong th:text="${userDirectorate}">unknown</strong></p>
-</div>
 
 <!-- Основной контент -->
 <div class="main-container">
@@ -356,6 +332,14 @@
                 <div class="kilometer">Управление системами</div>
                 <p>Доступ к настройкам окон и управлению системой мониторинга</p>
                 <a th:href="@{/cdu/dashboard}" class="btn-view" style="background: #e74c3c;">Перейти в панель управления</a>
+            </div>
+
+            <!-- Панель ЦДИ - показывается только для авторизованных пользователей ЦДИ -->
+            <div class="section-card" th:if="${isAuthenticated and userDirectorate == 'ЦДИ'}">
+                <h3>🏢 Панель управления ЦДИ</h3>
+                <div class="kilometer">Управление отчетностью</div>
+                <p>Доступ к отчетам системой мониторинга</p>
+                <a th:href="@{/cdi/info-dashboard}" class="btn-view" style="background: #e74c3c;">Перейти</a>
             </div>
         </div>
     </div>

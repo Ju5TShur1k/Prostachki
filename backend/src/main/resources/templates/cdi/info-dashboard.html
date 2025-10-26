@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Панель управления ЦДУ - ЖД Мониторинг</title>
+  <title>Панель управления ЦДИ - ЖД Мониторинг</title>
   <style>
     /* Стили header'а такие же как в index.html */
     .header {
@@ -204,11 +204,11 @@
   <nav class="nav">
     <a th:href="@{/}" class="nav-brand">
       <span>🚆</span>
-      ЖД Мониторинг - ЦДУ
+      ЖД Мониторинг - ЦДИ
     </a>
 
     <ul class="nav-menu">
-      <li><a th:href="@{/cdu/dashboard}">Главная ЦДУ</a></li>
+      <li><a th:href="@{/cdi/info-dashboard}">Главная ЦДИ</a></li>
       <li><a th:href="@{/}">Общая информация</a></li>
     </ul>
 
@@ -226,30 +226,26 @@
 
 <div class="main-container">
   <div class="welcome-section">
-    <div class="directorate-badge">Центральная Дирекция Управления</div>
+    <div class="directorate-badge">Центральная Дирекция Информации</div>
     <h1>Панель управления системами</h1>
-    <p>Управление и настройка систем мониторинга железнодорожных путей</p>
+    <p>Управление отчетностью систем мониторинга железнодорожных путей</p>
   </div>
 
   <div class="control-panel">
-    <h2>Управление системами</h2>
+    <h2>Управление отчетами</h2>
 
     <div class="control-grid">
+      <!-- Управление отчетами -->
       <div class="control-card">
-        <h3>📊 Управление окнами</h3>
-        <p>Настройка интерфейсов и рабочих окон системы мониторинга</p>
-        <a th:href="@{windows}" class="btn-control">Просмотреть окна</a>
+        <h3>📊 Управление отчетами</h3>
+        <p>Отправка отчетов ремонтных работ</p>
+        <a th:href="@{document}" class="btn-control">Перейти к отправке</a>
       </div>
 
+      <!-- Отчеты и аналитика -->
       <div class="control-card">
-        <h3>👥 Управление пользователями</h3>
-        <p>Добавление и управление пользователями системы</p>
-        <a th:href="@{users}" class="btn-control">Перейти к просмотру</a>
-      </div>
-
-      <div class="control-card">
-        <h3>📈 Аналитика</h3>
-        <p>Аналитические отчеты и статистика работы системы</p>
+        <h3>📈 Готовые отчеты</h3>
+        <p>Аналитические отчеты и статистика ремонтных работ</p>
         <a th:href="@{/results}" class="btn-control">Просмотреть отчеты</a>
       </div>
     </div>
