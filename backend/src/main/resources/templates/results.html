@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Отчеты по ремонтным окнам - ЖД Мониторинг</title>
+  <title>Отчеты о работах - ЖД Мониторинг</title>
   <style>
     /* Стили header'а */
     .header {
@@ -52,6 +52,12 @@
 
     .nav-menu a:hover {
         background: rgba(255,255,255,0.1);
+    }
+
+    .nav-auth {
+        display: flex;
+        gap: 0.8rem;
+        align-items: center;
     }
 
     .user-profile-compact {
@@ -105,155 +111,47 @@
         margin-bottom: 2rem;
     }
 
-    .directorate-badge {
-        display: inline-block;
-        background: #3498db;
-        color: white;
-        padding: 0.3rem 1rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
-    }
-
-    .filters {
+    .reports-section {
         background: white;
-        padding: 1.5rem;
+        padding: 2rem;
         border-radius: 10px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        margin-bottom: 2rem;
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
     }
 
-    .filter-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .filter-group label {
-        font-weight: bold;
-        color: #2c3e50;
-    }
-
-    .filter-group select, .filter-group input {
-        padding: 0.5rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-
-    .btn {
-        padding: 0.7rem 1.5rem;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 1rem;
-        font-weight: bold;
-        align-self: flex-end;
-    }
-
-    .btn-primary {
-        background: #27ae60;
-        color: white;
-    }
-
-    .reports-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 1.5rem;
-    }
-
-    .report-card {
-        background: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .report-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid #eee;
-    }
-
-    .window-dates {
-        background: #f8f9fa;
-        padding: 1rem;
-        border-radius: 6px;
-        margin-bottom: 1rem;
-    }
-
-    .date-range {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.5rem;
-    }
-
-    .progress-bar {
-        height: 8px;
-        background: #ecf0f1;
-        border-radius: 4px;
-        margin: 1rem 0;
-        overflow: hidden;
-    }
-
-    .progress-fill {
-        height: 100%;
-        background: #27ae60;
-        border-radius: 4px;
-    }
-
-    .stats {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
+    .reports-table {
+        width: 100%;
+        border-collapse: collapse;
         margin-top: 1rem;
     }
 
-    .stat-item {
-        text-align: center;
-        padding: 0.5rem;
-        background: #f8f9fa;
-        border-radius: 4px;
+    .reports-table th, .reports-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #eee;
     }
 
-    .stat-value {
-        font-size: 1.2rem;
+    .reports-table th {
+        background: #f8f9fa;
         font-weight: bold;
         color: #2c3e50;
     }
 
-    .stat-label {
-        font-size: 0.8rem;
-        color: #7f8c8d;
-    }
-
-    .status-indicator {
-        display: inline-block;
+    .status-badge {
         padding: 0.3rem 0.8rem;
         border-radius: 15px;
         font-size: 0.8rem;
         font-weight: bold;
     }
 
-    .status-active {
+    .status-submitted {
         background: #d4edda;
         color: #155724;
     }
 
-    .status-completed {
-        background: #d1ecf1;
-        color: #0c5460;
-    }
-
-    .status-planned {
-        background: #fff3cd;
-        color: #856404;
+    .no-reports {
+        text-align: center;
+        padding: 3rem;
+        color: #7f8c8d;
     }
   </style>
 </head>
@@ -263,175 +161,67 @@
     <a th:href="@{/}" class="nav-brand">
       <span>🚆</span>
       ЖД Мониторинг
-      <span th:if="${userDirectorate == 'ЦДУ'}">- ЦДУ</span>
-      <span th:if="${userDirectorate == 'ЦДИ'}">- ЦДИ</span>
     </a>
 
     <ul class="nav-menu">
-      <li th:if="${userDirectorate == 'ЦДУ'}"><a th:href="@{/cdu/dashboard}">Главная ЦДУ</a></li>
-      <li th:if="${userDirectorate == 'ЦДУ'}"><a th:href="@{/cdu/windows}">Управление окнами</a></li>
-      <li th:if="${userDirectorate == 'ЦДИ'}"><a th:href="@{/cdi/info-dashboard}">Главная ЦДИ</a></li>
-      <li th:if="${userDirectorate == 'ЦДИ'}"><a th:href="@{/cdi/document}">Управление документами</a></li>
-      <li><a th:href="@{/results}" style="background: rgba(255,255,255,0.2);">Отчеты по окнам</a></li>
-      <li><a th:href="@{/}">Общая информация</a></li>
+      <li><a th:href="@{/}">Главная</a></li>
+      <li><a th:href="@{/results}" style="background: rgba(255,255,255,0.2);">Все отчеты</a></li>
+      <li><a th:href="@{/krasnoyarsk}">Участок 0-125 км</a></li>
+      <li><a th:href="@{/east-siberia}">Участок 125-230 км</a></li>
+      <li><a th:href="@{/zabalkalye}">Участок 230-335 км</a></li>
     </ul>
 
-    <div class="user-profile-compact">
-      <div class="user-avatar-small" th:text="${#strings.substring(currentUsername, 0, 1).toUpperCase()}"></div>
-      <a th:href="@{/auth/logout}" class="logout-btn-compact">Выйти</a>
+    <div class="nav-auth">
+      <div th:if="${isAuthenticated}" class="user-profile-compact">
+        <div class="user-avatar-small" th:text="${#strings.substring(currentUsername, 0, 1).toUpperCase()}"></div>
+        <a th:href="@{/auth/logout}" class="logout-btn-compact">Выйти</a>
+      </div>
+      <div th:unless="${isAuthenticated}">
+        <a th:href="@{/auth/login}">Войти</a>
+        <a th:href="@{/auth/register}">Регистрация</a>
+      </div>
     </div>
   </nav>
 </header>
 
 <div class="main-container">
   <div class="page-header">
-    <div class="directorate-badge" th:text="${userDirectorate}">Дирекция</div>
-    <h1>Отчеты по ремонтным окнам</h1>
-    <p>Статистика и аналитика выполнения ремонтных работ на железнодорожных участках</p>
+    <h1>📊 Отчеты о работах на железнодорожных участках</h1>
+    <p>Все созданные отчеты сотрудников ЦДИ о ремонтных работах и техническом обслуживании</p>
   </div>
 
-  <div class="filters">
-    <div class="filter-group">
-      <label>Участок:</label>
-      <select>
-        <option>Все участки</option>
-        <option>Красноярская ж/д</option>
-        <option>Восточно-Сибирская ж/д</option>
-        <option>Забайкальская ж/д</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label>Период:</label>
-      <select>
-        <option>За все время</option>
-        <option>Текущий месяц</option>
-        <option>Прошлый месяц</option>
-        <option>Квартал</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label>Статус:</label>
-      <select>
-        <option>Все статусы</option>
-        <option>Активные</option>
-        <option>Завершенные</option>
-        <option>Запланированные</option>
-      </select>
-    </div>
-    <button class="btn btn-primary">Применить фильтры</button>
-  </div>
+  <div class="reports-section">
+    <h2>Все отчеты</h2>
 
-  <div class="reports-grid">
-    <!-- Отчет по Красноярской ж/д -->
-    <div class="report-card">
-      <div class="report-header">
-        <h3>🚆 Красноярская ж/д</h3>
-        <span class="status-indicator status-active">В работе</span>
-      </div>
-
-      <div class="window-dates">
-        <div class="date-range">
-          <strong>Период:</strong>
-          <span>15.01.2024 - 25.01.2024</span>
-        </div>
-        <div class="date-range">
-          <strong>Участок:</strong>
-          <span>0-125 км</span>
-        </div>
-      </div>
-
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 60%"></div>
-      </div>
-      <div style="text-align: center; font-size: 0.9rem; color: #7f8c8d;">
-        Выполнено: 60%
-      </div>
-
-      <div class="stats">
-        <div class="stat-item">
-          <div class="stat-value">8</div>
-          <div class="stat-label">дней прошло</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">5</div>
-          <div class="stat-label">дней осталось</div>
-        </div>
-      </div>
+    <div th:if="${#lists.isEmpty(reports)}" class="no-reports">
+      <h3>📝 Отчетов пока нет</h3>
+      <p>Сотрудники ЦДИ еще не создали ни одного отчета</p>
     </div>
 
-    <!-- Отчет по Восточно-Сибирской ж/д -->
-    <div class="report-card">
-      <div class="report-header">
-        <h3>⛰️ Восточно-Сибирская ж/д</h3>
-        <span class="status-indicator status-planned">Запланировано</span>
-      </div>
-
-      <div class="window-dates">
-        <div class="date-range">
-          <strong>Период:</strong>
-          <span>01.02.2024 - 15.02.2024</span>
-        </div>
-        <div class="date-range">
-          <strong>Участок:</strong>
-          <span>125-230 км</span>
-        </div>
-      </div>
-
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 0%"></div>
-      </div>
-      <div style="text-align: center; font-size: 0.9rem; color: #7f8c8d;">
-        Выполнено: 0%
-      </div>
-
-      <div class="stats">
-        <div class="stat-item">
-          <div class="stat-value">15</div>
-          <div class="stat-label">дней до начала</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">14</div>
-          <div class="stat-label">дней работ</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Отчет по Забайкальской ж/д -->
-    <div class="report-card">
-      <div class="report-header">
-        <h3>🌾 Забайкальская ж/д</h3>
-        <span class="status-indicator status-completed">Завершено</span>
-      </div>
-
-      <div class="window-dates">
-        <div class="date-range">
-          <strong>Период:</strong>
-          <span>10.12.2023 - 20.12.2023</span>
-        </div>
-        <div class="date-range">
-          <strong>Участок:</strong>
-          <span>230-335 км</span>
-        </div>
-      </div>
-
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 100%"></div>
-      </div>
-      <div style="text-align: center; font-size: 0.9rem; color: #7f8c8d;">
-        Выполнено: 100%
-      </div>
-
-      <div class="stats">
-        <div class="stat-item">
-          <div class="stat-value">10</div>
-          <div class="stat-label">дней работ</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">22</div>
-          <div class="stat-label">дней назад</div>
-        </div>
-      </div>
-    </div>
+    <table th:unless="${#lists.isEmpty(reports)}" class="reports-table">
+      <thead>
+      <tr>
+        <th>Название</th>
+        <th>Тип</th>
+        <th>Участок</th>
+        <th>Вид работ</th>
+        <th>Автор</th>
+        <th>Дата создания</th>
+        <th>Статус</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="report : ${reports}">
+        <td th:text="${report.title}">Название отчета</td>
+        <td th:text="${report.reportType}">Тип отчета</td>
+        <td th:text="${report.railwaySection}">Участок</td>
+        <td th:text="${report.workType}">Вид работ</td>
+        <td th:text="${report.author}">Автор</td>
+        <td th:text="${#temporals.format(report.createdDate, 'dd.MM.yyyy HH:mm')}">Дата</td>
+        <td><span class="status-badge status-submitted" th:text="${report.status}">Статус</span></td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 </body>
