@@ -12,10 +12,18 @@ public class CDIController {
 
     @GetMapping("/info-dashboard")
     public String cdiDashboard(HttpSession session, Model model) {
+        return checkAuthAndReturnView(session, model, "cdi/info-dashboard");
+    }
+
+    @GetMapping("/document")
+    public String documentManagement(HttpSession session, Model model) {
+        return checkAuthAndReturnView(session, model, "cdi/document");
+    }
+
+    private String checkAuthAndReturnView(HttpSession session, Model model, String viewName) {
         String username = (String) session.getAttribute("currentUser");
         String directorate = (String) session.getAttribute("userDirectorate");
 
-        // Проверяем, что пользователь авторизован и из ЦДУ
         if (username == null) {
             return "redirect:/auth/login";
         }
@@ -24,6 +32,10 @@ public class CDIController {
             return "redirect:/";
         }
 
-        return "cdi/info-dashboard";
+        model.addAttribute("currentUsername", username);
+        model.addAttribute("isAuthenticated", true);
+        model.addAttribute("userDirectorate", directorate);
+
+        return viewName;
     }
 }

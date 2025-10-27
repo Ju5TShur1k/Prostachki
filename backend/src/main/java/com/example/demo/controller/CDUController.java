@@ -12,10 +12,23 @@ public class CDUController {
 
     @GetMapping("/dashboard")
     public String cduDashboard(HttpSession session, Model model) {
+        return checkAuthAndReturnView(session, model, "cdu/dashboard");
+    }
+
+    @GetMapping("/windows")
+    public String windowsManagement(HttpSession session, Model model) {
+        return checkAuthAndReturnView(session, model, "cdu/windows");
+    }
+
+    @GetMapping("/users")
+    public String usersManagement(HttpSession session, Model model) {
+        return checkAuthAndReturnView(session, model, "cdu/users");
+    }
+
+    private String checkAuthAndReturnView(HttpSession session, Model model, String viewName) {
         String username = (String) session.getAttribute("currentUser");
         String directorate = (String) session.getAttribute("userDirectorate");
 
-        // Проверяем, что пользователь авторизован и из ЦДУ
         if (username == null) {
             return "redirect:/auth/login";
         }
@@ -24,6 +37,10 @@ public class CDUController {
             return "redirect:/";
         }
 
-        return "cdu/dashboard";
+        model.addAttribute("currentUsername", username);
+        model.addAttribute("isAuthenticated", true);
+        model.addAttribute("userDirectorate", directorate);
+
+        return viewName;
     }
 }
