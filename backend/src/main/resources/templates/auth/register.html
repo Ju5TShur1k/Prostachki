@@ -1,80 +1,241 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Регистрация</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Регистрация - ЖД Мониторинг</title>
   <style>
-    .container {
-        max-width: 400px;
-        margin: 50px auto;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: #f5f5f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
         padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
+    }
+
+    .register-container {
         background: white;
+        padding: 2.5rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 450px;
     }
+
+    .logo {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .logo h1 {
+        color: #2c3e50;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
     .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 1.5rem;
     }
+
     label {
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-weight: 500;
     }
-    input {
+
+    input, select {
         width: 100%;
-        padding: 8px;
+        padding: 0.8rem;
         border: 1px solid #ddd;
-        border-radius: 4px;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
     }
-    .btn {
-        width: 100%;
-        background: green;
-        color: white;
-        padding: 10px;
-        border: none;
-        border-radius: 4px;
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+
+    .directorate-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .directorate-option {
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        padding: 1rem;
+        text-align: center;
         cursor: pointer;
+        transition: all 0.3s;
     }
+
+    .directorate-option:hover {
+        border-color: #3498db;
+    }
+
+    .directorate-option.selected {
+        border-color: #3498db;
+        background-color: #ebf5fb;
+    }
+
+    .directorate-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .directorate-name {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    .directorate-desc {
+        font-size: 0.8rem;
+        color: #7f8c8d;
+        margin-top: 0.3rem;
+    }
+
+    .btn-register {
+        width: 100%;
+        padding: 0.8rem;
+        background: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .btn-register:hover {
+        background: #219a52;
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #7f8c8d;
+    }
+
+    .login-link a {
+        color: #3498db;
+        text-decoration: none;
+    }
+
     .error {
-        color: red;
-        margin-bottom: 15px;
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        border-radius: 6px;
+        padding: 0.8rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .form-note {
+        font-size: 0.8rem;
+        color: #7f8c8d;
+        margin-top: 0.3rem;
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <h2>Регистрация</h2>
-
-  <div th:if="${error}" class="error">
-    <span th:text="${error}"></span>
+<div class="register-container">
+  <div class="logo">
+    <h1>🚆 ЖД Мониторинг</h1>
+    <p>Регистрация в системе</p>
   </div>
+
+  <div th:if="${error}" class="error" th:text="${error}"></div>
 
   <form th:action="@{/auth/register}" method="post">
     <div class="form-group">
-      <label>Логин:</label>
-      <input type="text" name="username" required>
+      <label for="username">Имя пользователя:</label>
+      <input type="text" id="username" name="username" th:value="${registerRequest?.username}" required>
     </div>
 
     <div class="form-group">
-      <label>Email:</label>
-      <input type="email" name="email" required>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" th:value="${registerRequest?.email}" required>
     </div>
 
     <div class="form-group">
-      <label>Пароль:</label>
-      <input type="password" name="password" required>
+      <label for="password">Пароль:</label>
+      <input type="password" id="password" name="password" required>
+      <div class="form-note">Минимум 6 символов</div>
     </div>
 
     <div class="form-group">
-      <label>Подтвердите пароль:</label>
-      <input type="password" name="confirmPassword" required>
+      <label for="confirmPassword">Подтверждение пароля:</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" required>
     </div>
 
-    <button type="submit" class="btn">Зарегистрироваться</button>
+    <div class="form-group">
+      <label>Выберите дирекцию:</label>
+      <input type="hidden" id="directorate" name="directorate" th:value="${registerRequest?.directorate}" required>
+
+      <div class="directorate-options">
+        <div class="directorate-option" onclick="selectDirectorate('ЦДУ')">
+          <div class="directorate-icon">🏢</div>
+          <div class="directorate-name">ЦДУ</div>
+          <div class="directorate-desc">Управление</div>
+        </div>
+
+        <div class="directorate-option" onclick="selectDirectorate('ЦДИ')">
+          <div class="directorate-icon">📊</div>
+          <div class="directorate-name">ЦДИ</div>
+          <div class="directorate-desc">Информация</div>
+        </div>
+      </div>
+      <div class="form-note">ЦДУ - управление системами, ЦДИ - просмотр информации</div>
+    </div>
+
+    <button type="submit" class="btn-register">Зарегистрироваться</button>
   </form>
 
-  <p style="text-align: center; margin-top: 15px;">
-    Уже есть аккаунт? <a th:href="@{/login}">Войти</a>
-  </p>
+  <div class="login-link">
+    <p>Уже есть аккаунт? <a th:href="@{/auth/login}">Войти</a></p>
+  </div>
 </div>
+
+<script>
+  function selectDirectorate(directorate) {
+      document.getElementById('directorate').value = directorate;
+
+      // Убираем выделение со всех опций
+      document.querySelectorAll('.directorate-option').forEach(option => {
+          option.classList.remove('selected');
+      });
+
+      // Добавляем выделение выбранной опции
+      event.currentTarget.classList.add('selected');
+  }
+
+  // Автоматически выбираем опцию если значение уже установлено
+  document.addEventListener('DOMContentLoaded', function() {
+      const currentDirectorate = document.getElementById('directorate').value;
+      if (currentDirectorate) {
+          document.querySelectorAll('.directorate-option').forEach(option => {
+              if (option.querySelector('.directorate-name').textContent === currentDirectorate) {
+                  option.classList.add('selected');
+              }
+          });
+      }
+  });
+</script>
 </body>
 </html>

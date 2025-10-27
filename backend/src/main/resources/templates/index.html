@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Главная страница - Железнодорожный Мониторинг</title>
     <style>
         body {
@@ -11,10 +12,12 @@
             background-color: #f4f4f4;
         }
 
+        /* СТИЛИ ДЛЯ HEADER'А - ИСПРАВЛЕННЫЕ */
         .header {
             background: #2c3e50;
             color: white;
-            padding: 1rem 0;
+            padding: 0.8rem 0;
+            width: 100%;
         }
 
         .nav {
@@ -23,30 +26,41 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 2rem;
+            padding: 0 1rem;
+            gap: 1rem;
         }
 
         .nav-brand {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: white;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .nav-menu {
             display: flex;
             list-style: none;
-            gap: 2rem;
+            gap: 0.8rem;
             margin: 0;
             padding: 0;
+            flex-wrap: wrap;
+            justify-content: center;
+            flex: 1;
         }
 
         .nav-menu a {
             color: white;
             text-decoration: none;
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 4px;
             transition: background 0.3s;
+            font-size: 0.9rem;
+            white-space: nowrap;
         }
 
         .nav-menu a:hover {
@@ -55,17 +69,55 @@
 
         .nav-auth {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             align-items: center;
+            flex-shrink: 0;
+        }
+
+        .km-display {
+            color: white;
+            font-weight: bold;
+            margin-right: 0.8rem;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .user-welcome {
+            color: white;
+            margin-right: 0.8rem;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .user-profile-compact {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .user-avatar-small {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.75rem;
+            flex-shrink: 0;
         }
 
         .nav-auth a {
             color: white;
             text-decoration: none;
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             border: 1px solid white;
             border-radius: 4px;
             transition: all 0.3s;
+            font-size: 0.85rem;
+            white-space: nowrap;
         }
 
         .nav-auth a:hover {
@@ -73,9 +125,63 @@
             color: #2c3e50;
         }
 
+        .logout-btn-compact {
+            color: white;
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #e74c3c;
+            border-radius: 4px;
+            transition: all 0.3s;
+            background: #e74c3c;
+            font-size: 0.85rem;
+        }
+
+        .logout-btn-compact:hover {
+            background: #c0392b;
+            border-color: #c0392b;
+        }
+
+        /* Стиль для вкладки ЦДУ */
+        .cdu-tab {
+            background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+            border: 1px solid #c0392b !important;
+        }
+
+        .cdu-tab:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226) !important;
+        }
+
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 0.5rem;
+            }
+
+            .nav-menu {
+                gap: 0.5rem;
+            }
+
+            .nav-menu a {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .nav-auth {
+                gap: 0.5rem;
+            }
+
+            .km-display {
+                margin-right: 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* ОСТАЛЬНЫЕ СТИЛИ */
         .main-container {
             max-width: 1200px;
-            margin: 2rem auto;
+            margin: 0 auto;
             padding: 0 2rem;
         }
 
@@ -86,6 +192,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border-radius: 10px;
+            margin-top: 2rem;
         }
 
         .welcome-section h1 {
@@ -100,7 +207,7 @@
             border: 1px solid #c3e6cb;
             border-radius: 8px;
             padding: 15px;
-            margin-bottom: 20px;
+            margin: 20px 0;
             text-align: center;
             animation: fadeIn 0.5s;
         }
@@ -115,6 +222,7 @@
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
         }
 
         .sections-grid {
@@ -174,38 +282,19 @@
     </style>
 </head>
 <body>
-<!-- Шапка -->
-<header class="header">
-    <nav class="nav">
-        <a href="/" class="nav-brand">🚆 Ж/Д Мониторинг</a>
-
-        <ul class="nav-menu">
-            <li><a href="/">Главная</a></li>
-            <li><a href="/railway/km0-125">Участок 0-125 км</a></li>
-            <li><a href="/railway/km125-130">Участок 125-130 км</a></li>
-            <li><a href="/railway/km130-135">Участок 130-135 км</a></li>
-        </ul>
-
-        <div class="nav-auth">
-            <span id="usernameDisplay"></span>
-            <a href="/dashboard" id="dashboardLink" style="display: none;">Кабинет</a>
-            <a href="/logout" id="logoutLink" style="display: none;">Выйти</a>
-            <a href="/login" id="loginLink">Войти</a>
-            <a href="/auth/register" id="registerLink">Регистрация</a>
-        </div>
-    </nav>
-</header>
+<!-- HEADER ИЗ FRAGMENT -->
+<div th:replace="fragments/header :: header"></div>
 
 <!-- Основной контент -->
 <div class="main-container">
     <!-- Сообщение об успешной регистрации -->
-    <div id="registrationMessage" class="registration-success" style="display: none;">
+    <div th:if="${showRegistrationMessage}" class="registration-success">
         <h3>✅ Регистрация прошла успешно!</h3>
         <p>Добро пожаловать в систему мониторинга ЖД путей!</p>
     </div>
 
     <div class="welcome-section">
-        <h1 id="welcomeTitle">Система мониторинга ЖД путей</h1>
+        <h1>Система мониторинга ЖД путей</h1>
         <p>Выберите участок железной дороги для просмотра информации</p>
     </div>
 
@@ -216,25 +305,41 @@
             <!-- Участок 1 -->
             <div class="section-card">
                 <h3>Участок Красноярской ж/д</h3>
-                <div class="kilometer">Км 120-125</div>
+                <div class="kilometer">Км 0-125</div>
                 <p>Основной магистральный участок центрального направления</p>
-                <a href="/railway/km120-125" class="btn-view">Просмотреть участок</a>
+                <a th:href="@{/krasnoyarsk}" class="btn-view">Просмотреть участок</a>
             </div>
 
             <!-- Участок 2 -->
             <div class="section-card">
                 <h3>Участок Восточно-Сибирской ж/д</h3>
-                <div class="kilometer">Км 125-130</div>
+                <div class="kilometer">Км 123-230</div>
                 <p>Горный участок с сложным рельефом</p>
-                <a href="/railway/km125-130" class="btn-view">Просмотреть участок</a>
+                <a th:href="@{/east-siberia}" class="btn-view">Просмотреть участок</a>
             </div>
 
             <!-- Участок 3 -->
             <div class="section-card">
                 <h3>Участок Забайкальской ж/д</h3>
-                <div class="kilometer">Км 130-135</div>
+                <div class="kilometer">Км 230-335</div>
                 <p>Равнинный участок, текущие работы по обслуживанию</p>
-                <a href="/railway/km130-135" class="btn-view">Просмотреть участок</a>
+                <a th:href="@{/zabaikalye}" class="btn-view">Просмотреть участок</a>
+            </div>
+
+            <!-- Панель ЦДУ - показывается только для авторизованных пользователей ЦДУ -->
+            <div class="section-card" th:if="${isAuthenticated and userDirectorate == 'ЦДУ'}">
+                <h3>🏢 Панель управления ЦДУ</h3>
+                <div class="kilometer">Управление системами</div>
+                <p>Доступ к настройкам окон и управлению системой мониторинга</p>
+                <a th:href="@{/cdu/dashboard}" class="btn-view" style="background: #e74c3c;">Перейти в панель управления</a>
+            </div>
+
+            <!-- Панель ЦДИ - показывается только для авторизованных пользователей ЦДИ -->
+            <div class="section-card" th:if="${isAuthenticated and userDirectorate == 'ЦДИ'}">
+                <h3>🏢 Панель управления ЦДИ</h3>
+                <div class="kilometer">Управление отчетностью</div>
+                <p>Доступ к отчетам системой мониторинга</p>
+                <a th:href="@{/cdi/info-dashboard}" class="btn-view" style="background: #e74c3c;">Перейти</a>
             </div>
         </div>
     </div>
@@ -242,33 +347,20 @@
 
 <!-- Подвал -->
 <footer class="footer">
-    <p>&copy; 2025   ЖД Мониторинг. Все права женщин не защищены.</p>
-    <p>Контактная информация: кто прочитал - тот лох</p>
+    <p>&copy; 2025 ЖД Мониторинг. Все права защищены.</p>
+    <p>Контактная информация: justshurik01@gmail.com</p>
 </footer>
 
 <script>
-    // Показать сообщение об успешной регистрации
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('registrationSuccess')) {
-        const messageElement = document.getElementById('registrationMessage');
-        messageElement.style.display = 'block';
-
-        // Автоматически скрыть сообщение через 5 секунд
-        setTimeout(() => {
-            messageElement.style.display = 'none';
-            // Убрать параметр из URL без перезагрузки
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }, 5000);
-    }
-
-    // Обновить навигацию в зависимости от авторизации
-    function updateNavigation() {
-        // Здесь можно добавить логику для отображения имени пользователя
-        // если используется сессия или JWT токен
-    }
-
-    // Инициализация при загрузке страницы
-    document.addEventListener('DOMContentLoaded', updateNavigation);
+    // Автоматически скрыть сообщение об успешной регистрации через 5 секунд
+    document.addEventListener('DOMContentLoaded', function() {
+        const messageElement = document.querySelector('.registration-success');
+        if (messageElement) {
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 5000);
+        }
+    });
 </script>
 </body>
 </html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание окон между поездами - ЦДУ</title>
+    <style>
+        /* Стили header'а */
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 0.8rem 0;
+            width: 100%;
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+            gap: 1rem;
+        }
+
+        .nav-brand {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0.8rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .user-profile-compact {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .user-avatar-small {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.75rem;
+        }
+
+        .logout-btn-compact {
+            color: white;
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #e74c3c;
+            border-radius: 4px;
+            background: #e74c3c;
+            font-size: 0.85rem;
+        }
+
+        /* Основные стили */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .directorate-badge {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .creation-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .windows-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .window-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .window-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .window-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .time-info {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+
+        .time-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <nav class="nav">
+        <a th:href="@{/}" class="nav-brand">
+            <span>🚆</span>
+            ЖД Мониторинг - ЦДУ
+        </a>
+
+        <ul class="nav-menu">
+            <li><a th:href="@{/cdu/dashboard}">Главная ЦДУ</a></li>
+            <li><a th:href="@{/cdu/windows}" style="background: rgba(255,255,255,0.2);">Окна между поездами</a></li>
+            <li><a th:href="@{/results}">Аналитика</a></li>
+            <li><a th:href="@{/}">Общая информация</a></li>
+        </ul>
+
+        <div class="user-profile-compact">
+            <div class="user-avatar-small" th:text="${#strings.substring(currentUsername, 0, 1).toUpperCase()}"></div>
+            <a th:href="@{/auth/logout}" class="logout-btn-compact">Выйти</a>
+        </div>
+    </nav>
+</header>
+
+<div class="main-container">
+    <div class="page-header">
+        <div class="directorate-badge">Центральная Дирекция Управления</div>
+        <h1>Управление окнами между поездами</h1>
+        <p>Создавайте временные окна для проведения работ на железнодорожных участках</p>
+    </div>
+
+    <!-- Сообщение об успехе -->
+    <div th:if="${success}" class="success-message" th:text="${success}"></div>
+
+    <!-- Форма создания нового окна -->
+    <div class="creation-form">
+        <h2>🕒 Создать новое окно</h2>
+        <form th:action="@{/cdu/windows/create}" method="post" th:object="${newWindow}">
+            <div class="form-group">
+                <label for="title">Название окна:</label>
+                <input type="text" id="title" th:field="*{title}" placeholder="Например: Окно для ремонтных работ" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Описание работ:</label>
+                <textarea id="description" th:field="*{description}" placeholder="Опишите какие работы планируется выполнить" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="railwaySection">Участок железной дороги:</label>
+                <select id="railwaySection" th:field="*{railwaySection}" required>
+                    <option value="">Выберите участок</option>
+                    <option value="Красноярская ж/д">Красноярская ж/д (0-125 км)</option>
+                    <option value="Восточно-Сибирская ж/д">Восточно-Сибирская ж/д (125-230 км)</option>
+                    <option value="Забайкальская ж/д">Забайкальская ж/д (230-335 км)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Дата окна:</label>
+                <input type="date" id="date" th:field="*{date}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="startTime">Время начала:</label>
+                <input type="time" id="startTime" th:field="*{startTime}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="endTime">Время окончания:</label>
+                <input type="time" id="endTime" th:field="*{endTime}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="direction">Направление движения:</label>
+                <select id="direction" th:field="*{direction}" required>
+                    <option value="">Выберите направление</option>
+                    <option value="Восточное">Восточное</option>
+                    <option value="Западное">Западное</option>
+                    <option value="Северное">Северное</option>
+                    <option value="Южное">Южное</option>
+                    <option value="Оба направления">Оба направления</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success">Создать окно</button>
+        </form>
+    </div>
+
+    <!-- Список созданных окон -->
+    <div th:if="${not windows.empty}">
+        <h2>📋 Созданные окна</h2>
+        <div class="windows-grid">
+            <div class="window-card" th:each="window : ${windows}">
+                <div class="window-header">
+                    <h3 th:text="${window.title}">Название окна</h3>
+                    <span class="window-status status-active">Активно</span>
+                </div>
+                <p th:text="${window.description}">Описание работ</p>
+                <div class="time-info">
+                    <div class="time-row">
+                        <strong>Участок:</strong>
+                        <span th:text="${window.railwaySection}"></span>
+                    </div>
+                    <div class="time-row">
+                        <strong>Дата:</strong>
+                        <span th:text="${window.date}"></span>
+                    </div>
+                    <div class="time-row">
+                        <strong>Время:</strong>
+                        <span th:text="${window.startTime + ' - ' + window.endTime}"></span>
+                    </div>
+                    <div class="time-row">
+                        <strong>Направление:</strong>
+                        <span th:text="${window.direction}"></span>
+                    </div>
+                    <div class="time-row">
+                        <strong>Создано:</strong>
+                        <span th:text="${window.createdBy}"></span>
+                    </div>
+                </div>
+                <div class="window-controls">
+                    <form th:action="@{/cdu/windows/delete/{id}(id=${window.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Удалить это окно?')">Удалить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Состояние пустого списка -->
+    <div th:if="${windows.empty}" class="empty-state">
+        <h3>🕒 Окна еще не созданы</h3>
+        <p>Создайте первое временное окно для проведения работ с помощью формы выше</p>
+    </div>
+</div>
+</body>
+</html>

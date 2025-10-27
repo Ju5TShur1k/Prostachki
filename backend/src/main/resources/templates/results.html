@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Отчеты о работах - ЖД Мониторинг</title>
+  <style>
+    /* Стили header'а */
+    .header {
+        background: #2c3e50;
+        color: white;
+        padding: 0.8rem 0;
+        width: 100%;
+    }
+
+    .nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+        gap: 1rem;
+    }
+
+    .nav-brand {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .nav-menu {
+        display: flex;
+        list-style: none;
+        gap: 0.8rem;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-menu a {
+        color: white;
+        text-decoration: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        transition: background 0.3s;
+        font-size: 0.9rem;
+    }
+
+    .nav-menu a:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+    .nav-auth {
+        display: flex;
+        gap: 0.8rem;
+        align-items: center;
+    }
+
+    .user-profile-compact {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .user-avatar-small {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #3498db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+        font-size: 0.75rem;
+    }
+
+    .logout-btn-compact {
+        color: white;
+        text-decoration: none;
+        padding: 0.4rem 0.8rem;
+        border: 1px solid #e74c3c;
+        border-radius: 4px;
+        background: #e74c3c;
+        font-size: 0.85rem;
+    }
+
+    /* Основные стили */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .page-header {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .reports-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .reports-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+
+    .reports-table th, .reports-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+
+    .reports-table th {
+        background: #f8f9fa;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .status-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .status-submitted {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .no-reports {
+        text-align: center;
+        padding: 3rem;
+        color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+<header class="header">
+  <nav class="nav">
+    <a th:href="@{/}" class="nav-brand">
+      <span>🚆</span>
+      ЖД Мониторинг
+    </a>
+
+    <ul class="nav-menu">
+      <li><a th:href="@{/}">Главная</a></li>
+      <li><a th:href="@{/results}" style="background: rgba(255,255,255,0.2);">Все отчеты</a></li>
+      <li><a th:href="@{/krasnoyarsk}">Участок 0-125 км</a></li>
+      <li><a th:href="@{/east-siberia}">Участок 125-230 км</a></li>
+      <li><a th:href="@{/zabalkalye}">Участок 230-335 км</a></li>
+    </ul>
+
+    <div class="nav-auth">
+      <div th:if="${isAuthenticated}" class="user-profile-compact">
+        <div class="user-avatar-small" th:text="${#strings.substring(currentUsername, 0, 1).toUpperCase()}"></div>
+        <a th:href="@{/auth/logout}" class="logout-btn-compact">Выйти</a>
+      </div>
+      <div th:unless="${isAuthenticated}">
+        <a th:href="@{/auth/login}">Войти</a>
+        <a th:href="@{/auth/register}">Регистрация</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="main-container">
+  <div class="page-header">
+    <h1>📊 Отчеты о работах на железнодорожных участках</h1>
+    <p>Все созданные отчеты сотрудников ЦДИ о ремонтных работах и техническом обслуживании</p>
+  </div>
+
+  <div class="reports-section">
+    <h2>Все отчеты</h2>
+
+    <div th:if="${#lists.isEmpty(reports)}" class="no-reports">
+      <h3>📝 Отчетов пока нет</h3>
+      <p>Сотрудники ЦДИ еще не создали ни одного отчета</p>
+    </div>
+
+    <table th:unless="${#lists.isEmpty(reports)}" class="reports-table">
+      <thead>
+      <tr>
+        <th>Название</th>
+        <th>Тип</th>
+        <th>Участок</th>
+        <th>Вид работ</th>
+        <th>Автор</th>
+        <th>Дата создания</th>
+        <th>Статус</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="report : ${reports}">
+        <td th:text="${report.title}">Название отчета</td>
+        <td th:text="${report.reportType}">Тип отчета</td>
+        <td th:text="${report.railwaySection}">Участок</td>
+        <td th:text="${report.workType}">Вид работ</td>
+        <td th:text="${report.author}">Автор</td>
+        <td th:text="${#temporals.format(report.createdDate, 'dd.MM.yyyy HH:mm')}">Дата</td>
+        <td><span class="status-badge status-submitted" th:text="${report.status}">Статус</span></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

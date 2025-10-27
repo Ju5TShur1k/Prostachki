@@ -1,14 +1,156 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            width: 100%;
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-auth {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .km-display {
+            color: white;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .user-welcome {
+            color: white;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .user-profile-compact {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .user-avatar-small {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .nav-auth a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid white;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .nav-auth a:hover {
+            background: white;
+            color: #2c3e50;
+        }
+
+        .logout-btn-compact {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid #e74c3c;
+            border-radius: 4px;
+            transition: all 0.3s;
+            background: #e74c3c;
+        }
+
+        .logout-btn-compact:hover {
+            background: #c0392b;
+            border-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
 <div th:fragment="header">
-    <nav style="background: #2c3e50; padding: 1rem; color: white;">
-        <a th:href="@{/}" style="color: white; text-decoration: none; font-size: 1.2rem;">
-            🚆 ЖД Мониторинг
-        </a>
-        <div style="float: right;">
-            <a th:if="${isAuthenticated}" th:href="@{/logout}" style="color: white; margin-left: 1rem;">Выйти</a>
-            <a th:unless="${isAuthenticated}" th:href="@{/login}" style="color: white; margin-left: 1rem;">Войти</a>
-        </div>
-    </nav>
+    <header class="header">
+        <nav class="nav">
+            <a th:href="@{/}" class="nav-brand">
+                <span>🚆</span>
+                Ж/Д Мониторинг
+            </a>
+
+            <ul class="nav-menu">
+                <li><a th:href="@{/}">Главная</a></li>
+                <li><a th:href="@{/krasnoyarsk}">Участок 0-125 км</a></li>
+                <li><a th:href="@{/east-siberia}">Участок 125-230 км</a></li>
+                <li><a th:href="@{/zabaikalye}">Участок 230-335 км</a></li>
+            </ul>
+
+            <div class="nav-auth">
+
+                <!-- Для авторизованных пользователей -->
+                <div th:if="${isAuthenticated}" class="user-profile-compact">
+                    <div class="user-avatar-small" th:text="${#strings.substring(currentUsername, 0, 1).toUpperCase()}">
+                        А
+                    </div>
+                    <span class="user-welcome" th:text="${currentUsername}">Антонов Александр</span>
+                    <a th:href="@{/auth/logout}" class="logout-btn-compact">Выйти</a>
+                </div>
+
+                <!-- Для неавторизованных пользователей -->
+                <div th:unless="${isAuthenticated}">
+                    <a th:href="@{/auth/login}">Войти</a>
+                    <a th:href="@{/auth/register}">Регистрация</a>
+                </div>
+            </div>
+        </nav>
+    </header>
 </div>
+</body>
 </html>
