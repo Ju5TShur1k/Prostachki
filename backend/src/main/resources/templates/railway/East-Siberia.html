@@ -200,84 +200,29 @@
         <h2 class="section-title" th:text="${sectionName} + ' (' + ${kmRange} + ')'">Участок Восточно-Сибирской ж/д (Км 125-130)</h2>
         <p th:text="${description}">Горный участок со сложным рельефом</p>
 
-        <div class="terrain-features">
-            <h4>Особенности горного участка:</h4>
-            <ul>
-                <li>Крутые склоны и серпантины</li>
-                <li>Наличие тоннелей и мостов</li>
-                <li>Повышенная сейсмическая активность</li>
-                <li>Сложные климатические условия</li>
-            </ul>
-        </div>
-
-        <div class="section-details">
-            <div class="detail-card">
-                <h3>Статус ремонтных работ</h3>
-                <p th:if="${hasRepairWork}">На участке ведутся ремонтные работы</p>
-                <p th:unless="${hasRepairWork}">Ремонтные работы не запланированы</p>
-                <span class="status-indicator status-active"
-                      th:text="${repairStatus}">В процессе</span>
-            </div>
-
-            <div class="detail-card" th:if="${hasRepairWork}">
-                <h3>Плановый период работ</h3>
-                <p th:text="${repairPeriod}">10 октября 2023 - 25 октября 2023</p>
-            </div>
-
-            <div class="detail-card" th:if="${hasRepairWork}">
-                <h3>Тип работ</h3>
-                <p th:text="${workType}">Укрепление склонов и ремонт тоннелей</p>
-            </div>
-
-            <div class="detail-card" th:if="${hasRepairWork}">
-                <h3>Ответственный подрядчик</h3>
-                <p th:text="${contractor}">ООО "Гордорстрой"</p>
+        <!-- Окна между поездами -->
+        <div th:if="${not trainWindows.empty}" class="work-schedule" style="margin-top: 30px;">
+            <h3 class="section-title">🕒 Окна между поездами</h3>
+            <div class="sections-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-top: 20px;">
+                <div class="detail-card" th:each="window : ${trainWindows}" style="border-left: 4px solid #9b59b6;">
+                    <h3 th:text="${window.title}">Название окна</h3>
+                    <p th:text="${window.description}">Описание работ</p>
+                    <div style="background: #f8f9fa; padding: 10px; border-radius: 4px; margin-top: 10px;">
+                        <p><strong>📅 Дата:</strong> <span th:text="${window.date}"></span></p>
+                        <p><strong>⏰ Время:</strong> <span th:text="${window.startTime + ' - ' + window.endTime}"></span></p>
+                        <p><strong>🧭 Направление:</strong> <span th:text="${window.direction}"></span></p>
+                        <p><strong>👤 Создано:</strong> <span th:text="${window.createdBy}"></span></p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="work-schedule" th:if="${hasRepairWork}">
-            <h3 class="section-title">График работ на горном участке</h3>
-            <table class="schedule-table">
-                <thead>
-                <tr>
-                    <th>Дата</th>
-                    <th>Время</th>
-                    <th>Участок (км)</th>
-                    <th>Вид работ</th>
-                    <th>Особые условия</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>10.10.2025</td>
-                    <td>08:00-17:00</td>
-                    <td>125-126</td>
-                    <td>Укрепление склона</td>
-                    <td>Работа на высоте</td>
-                </tr>
-                <tr>
-                    <td>12.10.2025</td>
-                    <td>09:00-16:00</td>
-                    <td>Тоннель №3</td>
-                    <td>Ремонт освещения</td>
-                    <td>Ограниченное движение</td>
-                </tr>
-                <tr>
-                    <td>15.10.2025</td>
-                    <td>07:00-20:00</td>
-                    <td>127-128</td>
-                    <td>Балластировка</td>
-                    <td>Полное закрытие</td>
-                </tr>
-                <tr>
-                    <td>20.10.2025</td>
-                    <td>10:00-15:00</td>
-                    <td>128-130</td>
-                    <td>Контроль геодезии</td>
-                    <td>Вертолетные работы</td>
-                </tr>
-                </tbody>
-            </table>
+        <!-- Сообщение если окон нет -->
+        <div th:if="${trainWindows.empty}" class="work-schedule" style="margin-top: 30px;">
+            <h3 class="section-title">🕒 Окна между поездами</h3>
+            <div style="text-align: center; padding: 2rem; color: #7f8c8d;">
+                <p>На данном участке временные окна для работ еще не запланированы</p>
+            </div>
         </div>
 
         <div class="map-container">

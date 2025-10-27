@@ -187,70 +187,29 @@
     <h2 class="section-title" th:text="${sectionName} + ' (' + ${kmRange} + ')'">Участок Красноярской ж/д (Км 0-125)</h2>
     <p th:text="${description}">Основной магистральный участок центрального направления</p>
 
-    <div class="section-details">
-      <div class="detail-card">
-        <h3>Статус ремонтных работ</h3>
-        <p th:if="${hasRepairWork}">На участке запланированы ремонтные работы</p>
-        <p th:unless="${hasRepairWork}">Ремонтные работы не запланированы</p>
-        <span class="status-indicator"
-              th:classappend="${hasRepairWork} ? 'status-planned' : 'status-none'"
-              th:text="${repairStatus}">Запланированы</span>
-      </div>
-
-      <div class="detail-card" th:if="${hasRepairWork}">
-        <h3>Плановый период работ</h3>
-        <p th:text="${repairPeriod}">15 сентября 2023 - 30 сентября 2023</p>
-      </div>
-
-      <div class="detail-card" th:if="${hasRepairWork}">
-        <h3>Тип работ</h3>
-        <p th:text="${workType}">Частичная замена шпал и балласта</p>
-      </div>
-
-      <div class="detail-card" th:if="${hasRepairWork}">
-        <h3>Ответственный подрядчик</h3>
-        <p th:text="${contractor}">ООО "Желдорремонт"</p>
+    <!-- Окна между поездами -->
+    <div th:if="${not trainWindows.empty}" class="work-schedule" style="margin-top: 30px;">
+      <h3 class="section-title">🕒 Окна между поездами</h3>
+      <div class="sections-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-top: 20px;">
+        <div class="detail-card" th:each="window : ${trainWindows}" style="border-left: 4px solid #9b59b6;">
+          <h3 th:text="${window.title}">Название окна</h3>
+          <p th:text="${window.description}">Описание работ</p>
+          <div style="background: #f8f9fa; padding: 10px; border-radius: 4px; margin-top: 10px;">
+            <p><strong>📅 Дата:</strong> <span th:text="${window.date}"></span></p>
+            <p><strong>⏰ Время:</strong> <span th:text="${window.startTime + ' - ' + window.endTime}"></span></p>
+            <p><strong>🧭 Направление:</strong> <span th:text="${window.direction}"></span></p>
+            <p><strong>👤 Создано:</strong> <span th:text="${window.createdBy}"></span></p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="work-schedule" th:if="${hasRepairWork}">
-      <h3 class="section-title">График работ</h3>
-      <table class="schedule-table">
-        <thead>
-        <tr>
-          <th>Дата</th>
-          <th>Время</th>
-          <th>Участок (км)</th>
-          <th>Вид работ</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>15.09.2025</td>
-          <td>09:00-18:00</td>
-          <td>120-121</td>
-          <td>Замена шпал</td>
-        </tr>
-        <tr>
-          <td>16.09.2025</td>
-          <td>09:00-18:00</td>
-          <td>121-122</td>
-          <td>Замена шпал</td>
-        </tr>
-        <tr>
-          <td>20.09.2025</td>
-          <td>10:00-16:00</td>
-          <td>122-123</td>
-          <td>Балластировка</td>
-        </tr>
-        <tr>
-          <td>25.09.2025</td>
-          <td>08:00-20:00</td>
-          <td>123-125</td>
-          <td>Выправка пути</td>
-        </tr>
-        </tbody>
-      </table>
+    <!-- Сообщение если окон нет -->
+    <div th:if="${trainWindows.empty}" class="work-schedule" style="margin-top: 30px;">
+      <h3 class="section-title">🕒 Окна между поездами</h3>
+      <div style="text-align: center; padding: 2rem; color: #7f8c8d;">
+        <p>На данном участке временные окна для работ еще не запланированы</p>
+      </div>
     </div>
 
     <div class="map-container">

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.service.railway.RailwayService;
+import com.example.demo.service.WindowService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class HomeController {
 
     private final RailwayService railwayService;
+    private final WindowService windowService;
 
-    public HomeController(RailwayService railwayService) {
+    public HomeController(RailwayService railwayService, WindowService windowService) {
         this.railwayService = railwayService;
+        this.windowService = windowService;
     }
 
     @GetMapping("/")
@@ -27,6 +30,9 @@ public class HomeController {
         model.addAttribute("currentUsername", username);
         model.addAttribute("isAuthenticated", username != null);
         model.addAttribute("userDirectorate", directorate);
+
+        // Добавляем активные окна для отображения на главной
+        model.addAttribute("activeWindows", windowService.getAllWindows());
 
         if (Boolean.TRUE.equals(registrationSuccess)) {
             model.addAttribute("showRegistrationMessage", true);

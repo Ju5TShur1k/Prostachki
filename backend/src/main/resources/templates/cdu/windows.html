@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Управление окнами - ЦДУ</title>
+    <title>Создание окон между поездами - ЦДУ</title>
     <style>
         /* Стили header'а */
         .header {
@@ -115,35 +115,28 @@
             margin-bottom: 1rem;
         }
 
-        .windows-controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .btn {
-            padding: 0.7rem 1.5rem;
-            border: none;
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
             border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
+            padding: 1rem;
+            margin-bottom: 1rem;
         }
 
-        .btn-primary {
-            background: #3498db;
-            color: white;
-        }
-
-        .btn-success {
-            background: #27ae60;
-            color: white;
+        .creation-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
         }
 
         .windows-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 1.5rem;
+            margin-top: 2rem;
         }
 
         .window-card {
@@ -159,21 +152,44 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #eee;
         }
 
-        .window-dates {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 6px;
-            margin-bottom: 1rem;
+        .window-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
         }
 
-        .date-range {
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .window-controls {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
         }
 
         .form-group {
@@ -187,46 +203,38 @@
             color: #2c3e50;
         }
 
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 0.7rem;
+            padding: 0.8rem;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 1rem;
         }
 
-        .window-actions {
-            display: flex;
-            gap: 0.5rem;
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .time-info {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
             margin-top: 1rem;
         }
 
-        .btn-small {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-        }
-
-        .status-indicator {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .status-active {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-planned {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-completed {
-            background: #d1ecf1;
-            color: #0c5460;
+        .time-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
         }
     </style>
 </head>
@@ -240,9 +248,8 @@
 
         <ul class="nav-menu">
             <li><a th:href="@{/cdu/dashboard}">Главная ЦДУ</a></li>
-            <li><a th:href="@{/cdu/windows}" style="background: rgba(255,255,255,0.2);">Управление окнами</a></li>
-            <li><a th:href="@{/cdu/users}">Пользователи</a></li>
-            <li><a th:href="@{/results}">Отчеты по окнам</a></li>
+            <li><a th:href="@{/cdu/windows}" style="background: rgba(255,255,255,0.2);">Окна между поездами</a></li>
+            <li><a th:href="@{/results}">Аналитика</a></li>
             <li><a th:href="@{/}">Общая информация</a></li>
         </ul>
 
@@ -256,202 +263,114 @@
 <div class="main-container">
     <div class="page-header">
         <div class="directorate-badge">Центральная Дирекция Управления</div>
-        <h1>Управление ремонтными окнами</h1>
-        <p>Настройка дат и периодов ремонтных работ на железнодорожных участках</p>
+        <h1>Управление окнами между поездами</h1>
+        <p>Создавайте временные окна для проведения работ на железнодорожных участках</p>
     </div>
 
-    <div class="windows-controls">
-        <button class="btn btn-primary" onclick="addNewWindow()">+ Добавить новое окно</button>
-        <button class="btn btn-success" onclick="saveAllChanges()">💾 Сохранить все изменения</button>
+    <!-- Сообщение об успехе -->
+    <div th:if="${success}" class="success-message" th:text="${success}"></div>
+
+    <!-- Форма создания нового окна -->
+    <div class="creation-form">
+        <h2>🕒 Создать новое окно</h2>
+        <form th:action="@{/cdu/windows/create}" method="post" th:object="${newWindow}">
+            <div class="form-group">
+                <label for="title">Название окна:</label>
+                <input type="text" id="title" th:field="*{title}" placeholder="Например: Окно для ремонтных работ" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Описание работ:</label>
+                <textarea id="description" th:field="*{description}" placeholder="Опишите какие работы планируется выполнить" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="railwaySection">Участок железной дороги:</label>
+                <select id="railwaySection" th:field="*{railwaySection}" required>
+                    <option value="">Выберите участок</option>
+                    <option value="Красноярская ж/д">Красноярская ж/д (0-125 км)</option>
+                    <option value="Восточно-Сибирская ж/д">Восточно-Сибирская ж/д (125-230 км)</option>
+                    <option value="Забайкальская ж/д">Забайкальская ж/д (230-335 км)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Дата окна:</label>
+                <input type="date" id="date" th:field="*{date}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="startTime">Время начала:</label>
+                <input type="time" id="startTime" th:field="*{startTime}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="endTime">Время окончания:</label>
+                <input type="time" id="endTime" th:field="*{endTime}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="direction">Направление движения:</label>
+                <select id="direction" th:field="*{direction}" required>
+                    <option value="">Выберите направление</option>
+                    <option value="Восточное">Восточное</option>
+                    <option value="Западное">Западное</option>
+                    <option value="Северное">Северное</option>
+                    <option value="Южное">Южное</option>
+                    <option value="Оба направления">Оба направления</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success">Создать окно</button>
+        </form>
     </div>
 
-    <div class="windows-grid">
-        <!-- Окно 1: Красноярская ж/д -->
-        <div class="window-card">
-            <div class="window-header">
-                <h3>🚆 Красноярская ж/д</h3>
-                <span class="status-indicator status-active">Активно</span>
-            </div>
-
-            <div class="window-dates">
-                <div class="date-range">
-                    <strong>Текущий период:</strong>
-                    <span>15.01.2024 - 25.01.2024</span>
+    <!-- Список созданных окон -->
+    <div th:if="${not windows.empty}">
+        <h2>📋 Созданные окна</h2>
+        <div class="windows-grid">
+            <div class="window-card" th:each="window : ${windows}">
+                <div class="window-header">
+                    <h3 th:text="${window.title}">Название окна</h3>
+                    <span class="window-status status-active">Активно</span>
                 </div>
-                <div class="date-range">
-                    <strong>Участок:</strong>
-                    <span>0-125 км</span>
+                <p th:text="${window.description}">Описание работ</p>
+                <div class="time-info">
+                    <div class="time-row">
+                        <strong>Участок:</strong>
+                        <span th:text="${window.railwaySection}"></span>
+                    </div>
+                    <div class="time-row">
+                        <strong>Дата:</strong>
+                        <span th:text="${window.date}"></span>
+                    </div>
+                    <div class="time-row">
+                        <strong>Время:</strong>
+                        <span th:text="${window.startTime + ' - ' + window.endTime}"></span>
+                    </div>
+                    <div class="time-row">
+                        <strong>Направление:</strong>
+                        <span th:text="${window.direction}"></span>
+                    </div>
+                    <div class="time-row">
+                        <strong>Создано:</strong>
+                        <span th:text="${window.createdBy}"></span>
+                    </div>
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label>Дата начала работ:</label>
-                <input type="date" value="2024-01-15">
-            </div>
-
-            <div class="form-group">
-                <label>Дата окончания работ:</label>
-                <input type="date" value="2024-01-25">
-            </div>
-
-            <div class="form-group">
-                <label>Тип работ:</label>
-                <select>
-                    <option>Плановый ремонт</option>
-                    <option>Аварийный ремонт</option>
-                    <option>Техническое обслуживание</option>
-                    <option>Замена пути</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Статус окна:</label>
-                <select>
-                    <option>Активно</option>
-                    <option>Запланировано</option>
-                    <option>Завершено</option>
-                    <option>Отменено</option>
-                </select>
-            </div>
-
-            <div class="window-actions">
-                <button class="btn btn-primary btn-small">Сохранить</button>
-                <button class="btn btn-success btn-small">Скопировать</button>
-                <button class="btn btn-small" style="background: #e74c3c; color: white;">Удалить</button>
+                <div class="window-controls">
+                    <form th:action="@{/cdu/windows/delete/{id}(id=${window.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Удалить это окно?')">Удалить</button>
+                    </form>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- Окно 2: Восточно-Сибирская ж/д -->
-        <div class="window-card">
-            <div class="window-header">
-                <h3>⛰️ Восточно-Сибирская ж/д</h3>
-                <span class="status-indicator status-planned">Запланировано</span>
-            </div>
-
-            <div class="window-dates">
-                <div class="date-range">
-                    <strong>Запланированный период:</strong>
-                    <span>01.02.2024 - 15.02.2024</span>
-                </div>
-                <div class="date-range">
-                    <strong>Участок:</strong>
-                    <span>125-230 км</span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Дата начала работ:</label>
-                <input type="date" value="2024-02-01">
-            </div>
-
-            <div class="form-group">
-                <label>Дата окончания работ:</label>
-                <input type="date" value="2024-02-15">
-            </div>
-
-            <div class="form-group">
-                <label>Тип работ:</label>
-                <select>
-                    <option>Укрепление склонов</option>
-                    <option>Плановый ремонт</option>
-                    <option>Аварийный ремонт</option>
-                    <option>Техническое обслуживание</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Статус окна:</label>
-                <select>
-                    <option>Запланировано</option>
-                    <option>Активно</option>
-                    <option>Завершено</option>
-                    <option>Отменено</option>
-                </select>
-            </div>
-
-            <div class="window-actions">
-                <button class="btn btn-primary btn-small">Сохранить</button>
-                <button class="btn btn-success btn-small">Скопировать</button>
-                <button class="btn btn-small" style="background: #e74c3c; color: white;">Удалить</button>
-            </div>
-        </div>
-
-        <!-- Окно 3: Забайкальская ж/д -->
-        <div class="window-card">
-            <div class="window-header">
-                <h3>🌾 Забайкальская ж/д</h3>
-                <span class="status-indicator status-completed">Завершено</span>
-            </div>
-
-            <div class="window-dates">
-                <div class="date-range">
-                    <strong>Завершенный период:</strong>
-                    <span>10.12.2023 - 20.12.2023</span>
-                </div>
-                <div class="date-range">
-                    <strong>Участок:</strong>
-                    <span>230-335 км</span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Дата начала работ:</label>
-                <input type="date" value="2023-12-10" disabled>
-            </div>
-
-            <div class="form-group">
-                <label>Дата окончания работ:</label>
-                <input type="date" value="2023-12-20" disabled>
-            </div>
-
-            <div class="form-group">
-                <label>Тип работ:</label>
-                <select disabled>
-                    <option>Техническое обслуживание</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Статус окна:</label>
-                <select>
-                    <option>Завершено</option>
-                    <option>Активно</option>
-                    <option>Запланировано</option>
-                    <option>Отменено</option>
-                </select>
-            </div>
-
-            <div class="window-actions">
-                <button class="btn btn-primary btn-small">Сохранить</button>
-                <button class="btn btn-success btn-small">Повторить</button>
-                <button class="btn btn-small" style="background: #e74c3c; color: white;">Удалить</button>
-            </div>
-        </div>
+    <!-- Состояние пустого списка -->
+    <div th:if="${windows.empty}" class="empty-state">
+        <h3>🕒 Окна еще не созданы</h3>
+        <p>Создайте первое временное окно для проведения работ с помощью формы выше</p>
     </div>
 </div>
-
-<script>
-    function addNewWindow() {
-        alert('Функция добавления нового ремонтного окна');
-        // Здесь будет логика добавления нового окна
-    }
-
-    function saveAllChanges() {
-        alert('Все изменения сохранены успешно!');
-        // Здесь будет логика сохранения всех изменений
-    }
-
-    // Автоматическое обновление статусов при изменении дат
-    document.addEventListener('DOMContentLoaded', function() {
-        const dateInputs = document.querySelectorAll('input[type="date"]');
-        dateInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                const card = this.closest('.window-card');
-                const statusSelect = card.querySelector('select:last-of-type');
-                statusSelect.value = 'Активно';
-            });
-        });
-    });
-</script>
 </body>
 </html>

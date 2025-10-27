@@ -272,94 +272,31 @@
         <h2 class="section-title" th:text="${sectionName} + ' (' + ${kmRange} + ')'">Участок Забайкальской ж/д (Км 130-135)</h2>
         <p th:text="${description}">Развинный участок, текущие работы по обслуживанию</p>
 
-        <div class="maintenance-features">
-            <h4>Особенности участка Забайкальской ж/д:</h4>
-            <ul class="maintenance-list">
-                <li>Развитая инфраструктура с множеством ответвлений</li>
-                <li>Регулярное техническое обслуживание путей</li>
-                <li>Система автоматического контроля состояния пути</li>
-                <li>Постоянный мониторинг температурного режима</li>
-                <li>Плановые инспекции мостов и тоннелей</li>
-            </ul>
-        </div>
-
-        <div class="section-details">
-            <div class="detail-card">
-                <h3>Статус ремонтных работ</h3>
-                <p th:if="${hasRepairWork}">На участке ведутся ремонтные работы</p>
-                <p th:unless="${hasRepairWork}">Ремонтные работы не запланированы</p>
-                <span class="status-indicator status-none"
-                      th:text="${repairStatus}">Не запланированы</span>
-            </div>
-
-            <div class="detail-card">
-                <h3>Текущий статус участка</h3>
-                <p>Участок полностью функционирует</p>
-                <span class="status-indicator" style="background-color: #27ae60; color: white;">Стабильная работа</span>
-            </div>
-
-            <div class="detail-card">
-                <h3>Тип обслуживания</h3>
-                <p th:text="${workType}">Регулярное техническое обслуживание</p>
-            </div>
-
-            <div class="detail-card">
-                <h3>Ответственная служба</h3>
-                <p th:text="${contractor}">Служба пути Забайкальской ж/д</p>
+        <!-- Окна между поездами -->
+        <div th:if="${not trainWindows.empty}" class="work-schedule" style="margin-top: 30px;">
+            <h3 class="section-title">🕒 Окна между поездами</h3>
+            <div class="sections-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-top: 20px;">
+                <div class="detail-card" th:each="window : ${trainWindows}" style="border-left: 4px solid #9b59b6;">
+                    <h3 th:text="${window.title}">Название окна</h3>
+                    <p th:text="${window.description}">Описание работ</p>
+                    <div style="background: #f8f9fa; padding: 10px; border-radius: 4px; margin-top: 10px;">
+                        <p><strong>📅 Дата:</strong> <span th:text="${window.date}"></span></p>
+                        <p><strong>⏰ Время:</strong> <span th:text="${window.startTime + ' - ' + window.endTime}"></span></p>
+                        <p><strong>🧭 Направление:</strong> <span th:text="${window.direction}"></span></p>
+                        <p><strong>👤 Создано:</strong> <span th:text="${window.createdBy}"></span></p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="current-works">
-            <h3 class="section-title">Текущие работы по обслуживанию</h3>
-            <table class="works-table">
-                <thead>
-                <tr>
-                    <th>Вид работ</th>
-                    <th>Периодичность</th>
-                    <th>Статус</th>
-                    <th>Последнее выполнение</th>
-                    <th>Следующее выполнение</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Визуальный осмотр пути</td>
-                    <td>Ежедневно</td>
-                    <td class="status-completed">Выполнено</td>
-                    <td>09.10.2025</td>
-                    <td>10.10.2025</td>
-                </tr>
-                <tr>
-                    <td>Контроль стыков и соединений</td>
-                    <td>Еженедельно</td>
-                    <td class="status-completed">Выполнено</td>
-                    <td>06.10.2025</td>
-                    <td>13.10.2025</td>
-                </tr>
-                <tr>
-                    <td>Проверка стрелочных переводов</td>
-                    <td>Еженедельно</td>
-                    <td class="status-in-progress">В процессе</td>
-                    <td>02.10.2025</td>
-                    <td>09.10.2025</td>
-                </tr>
-                <tr>
-                    <td>Контроль геометрии пути</td>
-                    <td>Ежемесячно</td>
-                    <td class="status-planned">Запланировано</td>
-                    <td>15.09.2025</td>
-                    <td>15.10.2025</td>
-                </tr>
-                <tr>
-                    <td>Осмотр искусственных сооружений</td>
-                    <td>Ежеквартально</td>
-                    <td class="status-completed">Выполнено</td>
-                    <td>01.10.2025</td>
-                    <td>01.01.2025</td>
-                </tr>
-                </tbody>
-            </table>
+        <!-- Сообщение если окон нет -->
+        <div th:if="${trainWindows.empty}" class="work-schedule" style="margin-top: 30px;">
+            <h3 class="section-title">🕒 Окна между поездами</h3>
+            <div style="text-align: center; padding: 2rem; color: #7f8c8d;">
+                <p>На данном участке временные окна для работ еще не запланированы</p>
+            </div>
         </div>
+
 
         <div class="map-container">
             <div class="map-overlay">
